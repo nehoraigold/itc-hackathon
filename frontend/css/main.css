@@ -24,11 +24,6 @@ body{
 }
 
 
-.infos{
-    display: flex;
-    justify-content: center;
-}
-
 input[name='address'] {
     width: 450px;
 }
@@ -36,6 +31,11 @@ input[name='address'] {
 input[name='datetime'] {
     width: 200px;
     font-size: 14px;
+    
+}
+
+.submitButtons{
+    display: block;
 }
 
 .form-container {
