@@ -15,13 +15,20 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <!--JQUERY-->
 	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
+  
+    <script src="https://api.mqcdn.com/sdk/place-search-js/v1.0.0/place-search.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/place-search-js/v1.0.0/place-search.css"/>  
     <script defer src="./js/logic.js"></script>
+    
+<!--     
+    <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script> -->
 
     
 </head>
 <body>
     <form action="/search" class="addressForm" id='form'>
-        <input type="text" placeholder='Enter an address' class="addressForm-item" name="address">
+        <input type="search" placeholder='Enter an address' class="addressForm-item" name="address" id="search-input">
         <input type="datetime-local" name="datetime" class="addressForm-item">
         <input type="submit" value="Send" class="addressForm-item">
     </form>

@@ -58,3 +58,10 @@ function submitFunction(event) {
 }
 
 $("#form").submit(submitFunction);
+
+// Address autocomplete
+
+placeSearch({
+    key: `${MAPQUEST_API_KEY}`,
+    container: document.querySelector('#search-input')
+  });
