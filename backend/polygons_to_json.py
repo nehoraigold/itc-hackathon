@@ -30,9 +30,10 @@ def insert_to_json(coords, name):
 
 
 if __name__ == '__main__':
-
-    polygon_points = [] #input coordinates
-    name = ''  #input name
+    polygon_points = [32.101537, 34.78054, 32.101464, 34.779741, 32.099883, 34.779811, 32.09976, 34.780551, 32.099469,
+                      34.780717, 32.099142, 34.780674, 32.09897, 34.781774, 32.099142, 34.782085, 32.100192, 34.781887,
+                      32.100174, 34.781372, 32.101542, 34.780889]  # input coordinates
+    name = 'north_tlv'  # input name
 
     c_coords = coord_in_lat_long(polygon_points)
 
