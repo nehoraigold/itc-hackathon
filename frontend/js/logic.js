@@ -10,8 +10,8 @@ logo.addClass('bigLogo');
 $('body').append(logo);
 
 
-var map = L.map('map').setView([32.0853, 34.7818], 13);
-var reporting = true;
+var map = L.map('map').setView([32.0853, 34.7818], 15);
+var reporting = false;
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -89,6 +89,13 @@ function createPolygon(coordArrayOfArrays) {
 function changeReportStatus() {
     clearOpacityDiv();
     reporting = !reporting;
+    var mapElement = $("#map");
+    if (reporting) {
+        mapElement.css({cursor:"pointer"});
+    } else {
+        mapElement.css({cursor:"grab"});
+        deleteMapMarkers();
+    }
     console.log('reporting!')
 }
 
@@ -101,14 +108,15 @@ function clearOpacityDiv() {
 $(document).ready(function () {
     $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
-    $.ajax({
-        type: 'GET',
-        url: '/get_areas',
-        contentType: 'application/json',
-        success: function (resp) {
-            for (var i = 0; i < resp.polygons.length; i++) {
-                createPolygon(resp.polygons[i].coord);
-            }
-        }
-    })
+    // to get polygons later
+    // $.ajax({
+    //     type: 'GET',
+    //     url: '/get_areas',
+    //     contentType: 'application/json',
+    //     success: function (resp) {
+    //         for (var i = 0; i < resp.polygons.length; i++) {
+    //             createPolygon(resp.polygons[i].coord);
+    //         }
+    //     }
+    // })
 });

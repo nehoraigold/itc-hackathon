@@ -13,7 +13,7 @@ def css(filepath):
 
 @get("/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
 def img(filepath):
-    return static_file(filepath, root="images")
+    return static_file(filepath, root="../frontend/images")
 
 
 @get("/")
