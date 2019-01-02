@@ -73,6 +73,7 @@ function getLongLatAndGoToAddress(address) {
 function goToAddress(lat, lng, street) {
     clearOpacityDiv();
     deleteMapMarkers();
+    addTable();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
     map.flyTo(latLng);
@@ -92,6 +93,7 @@ function createPolygon(coordArrayOfArrays) {
 
 function changeReportStatus() {
     clearOpacityDiv();
+    addTable();
     reporting = !reporting;
     var mapElement = $("#map");
     if (reporting) {
@@ -106,6 +108,19 @@ function clearOpacityDiv() {
     opacityDiv.remove();
     logo.addClass('smallLogo');
     logo.removeClass('bigLogo');
+}
+
+var table = $('<table/>');
+$('body').append(table);
+
+var column = $('<tr/>');
+table.append(column);
+
+function addTable() {
+    
+    table.addClass('table');
+    column.addClass('column');
+    
 }
 
 $("#form").submit(submitFunction);
