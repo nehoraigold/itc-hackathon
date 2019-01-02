@@ -20,12 +20,29 @@ function getLongLatFromAddress(address) {
         dataType: 'json',
         contentType: 'application/json',
         success: function(resp) {
+            console.log(resp)
             var lat = resp.results[0].locations[0].latLng.lat;
             var lng = resp.results[0].locations[0].latLng.lng;
-            return [lat, lng];
+            var street = resp.results[0].locations[0].street;
+            goToAddress(lat, lng, street)
         },
         error: function(resp) {
             console.log(resp);
         }
     })
 }
+
+function goToAddress(lat, lng, street) {
+    var latLng = [lat, lng];
+    L.marker(latLng).addTo(map).bindPopup(street).openPopup();
+    map.setZoom(20).panTo(latLng);
+}
+
+function submitFunction(event) {
+    event.preventDefault();
+    var address = $("#form").children()[0].value;
+    var time = $('#form').children()[1].value;
+    getLongLatFromAddress(address);
+}
+
+$("#form").submit(submitFunction);
