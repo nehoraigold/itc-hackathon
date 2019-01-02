@@ -1,34 +1,64 @@
 html{
-    height: 100%;
+    height: 95%;
     width: 100%;
     padding: 0;
     margin: 0;
 }
 body{
-    height: 100%;
+    height: 95%;
     width: 100%;
     padding: 0;
     margin: 0;
-}
-.addressForm{
-    margin-top: 5%;
-    position: absolute;
-    left: 30%;
-    z-index: 123456;
+    text-align:center;
 }
 
-.addressForm-item{
-    border-radius: 20px;
-    padding: 5px;
+.addressForm-item {
+    border-radius: 10px;
+    padding: 5px 10px;
     font-size: 20px;
     height: 35px;
+    border-width:1px;
+}
 
+input[name='address'] {
+    width: 300px;
+}
+
+input[name='datetime'] {
+    width: 250px;
+}
+
+.form-container {
+    margin:auto;
+    position:relative;
+    z-index:123456;
+    margin-top: 5%;
 }
 
 #map {
     height: 100%;
     width: 100%;
     z-index: 1;
+    top:0;
+    bottom:0;
+    position:fixed;
+}
+
+#report-spot {
+    outline:none;
+    border-radius:5px;
+    padding:7px 10px;
+    background: #febbbb; /* Old browsers */
+    background: -moz-linear-gradient(top, #febbbb 0%, #fe9090 45%, #ff5c5c 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */    border: 0;
+}
+
+#report-spot:active {
+    background: #febbbb; /* Old browsers */
+    background: -moz-linear-gradient(bottom, #febbbb 0%, #fe9090 45%, #ff5c5c 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(bottom, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to top, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 
 .opacityDiv {
@@ -45,26 +75,26 @@ body{
 }
 
 .bigLogo {
-    background-image: url(../images/LogoMakr_1LY3yC.png);
-    vertical-align: middle;
-    z-index: 123;
-    position: absolute;
-    left: 15%;
-    top: 30%;
-    background-size: cover;
-    width: 50%;
-    height: 50%;
-    padding: 0;
-
+    background-image: url('../images/LogoMakr_1LY3yC.png');
+    z-index: 1234567;
+    position: relative;
+    margin:auto;
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    height:300px;
+    top:50px;
 }
 
 .smallLogo {
-    background-image: url(../images/LogoMakr_1LY3yC.png);
-    position: absolute;
-    background-size: cover;
-    z-index: 123;
-    right: 2%;
-    top: 2%;
-    width: 15%;
-    height: 15%;
+    background-image: url('../images/LogoMakr_1LY3yC.png');
+    position:absolute;
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    z-index:123456789;
+    height:100px;
+    width:200px;
+    right:0;
+    top:20px;
 }

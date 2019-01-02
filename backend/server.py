@@ -1,4 +1,4 @@
-from bottle import run, get, static_file
+from bottle import run, get, static_file, request, response
 
 
 @get("/js/<filepath:re:.*\.js>")
@@ -13,12 +13,17 @@ def css(filepath):
 
 @get("/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
 def img(filepath):
-    return static_file(filepath, root="images")
+    return static_file(filepath, root="../frontend/images")
 
 
 @get("/")
 def html():
     return static_file("main.html", root='../frontend')
+
+
+@get('/get_areas')
+def get_polygons():
+    return "ok"
 
 
 def main():
