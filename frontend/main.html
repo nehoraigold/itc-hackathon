@@ -5,23 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Hackaton</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
     <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css" />
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <!--JQUERY-->
 	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
     <script defer src="./js/logic.js"></script>
-    <script defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyD3Y0P0c85eejxOt59xXqTtULkZVuMktxk&callback=initMap'></script>
+
     
 </head>
 <body>
-    <form action="/action_page.php" class="addressForm">
-        <input type="text" placeholder='Enter an address' class="addressForm-item" id='locationTextField'>
-        <input type="datetime-local" name="datetime" class="addressForm-item">
-        <input type="submit" value="Send" class="addressForm-item">
+    <form class="addressForm">
+        <input type="text" placeholder='Enter an address' class="addressForm-item" id='locationTextField' required>
+        <input type="datetime-local" name="datetime" class="addressForm-item" id='dueDate'>
+        <input type="submit" value="Send" class="addressForm-item" id='submitButton' onclick="submitFunction()">
     </form type="submit">
     <div id="map"></div>
-    <!-- <iframe id='map' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3381.6072626069954!2d34.7699467151638!3d32.052820281196716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d4ca03868acf5%3A0xdb4d73a0809b2856!2sShoken+St+18%2C+Tel+Aviv-Yafo!5e0!3m2!1sen!2sil!4v1546425152137" frameborder="0" style="border:0" allowfullscreen></iframe> -->
-    <!-- <iframe id='map' src="https://www.google.com/maps/d/u/0/embed?mid=1vBtE-9im8hCLKgJ6QXcpcy5IuAt2IFnV"></iframe> -->
     
 </body>
 </html>
