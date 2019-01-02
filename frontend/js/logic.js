@@ -105,7 +105,6 @@ function clearOpacityDiv() {
     logo.removeClass('bigLogo');
 }
 
-<<<<<<< HEAD
 $("#form").submit(submitFunction);
 
 // Address autocomplete
@@ -114,7 +113,7 @@ placeSearch({
     key: `${MAPQUEST_API_KEY}`,
     container: document.querySelector('#search-input')
   });
-=======
+  
 $(document).ready(function () {
     $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
@@ -130,4 +129,3 @@ $(document).ready(function () {
     //     }
     // })
 });
->>>>>>> 42a568ed204f610179472c2bc39f61445bfd6c21
