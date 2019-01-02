@@ -10,22 +10,29 @@ import ast
 import json
 import os
 
+import sqlite3
+DB_FILENAME = 'available_log.db'
 
 LATITUDE = 0
 LONGITUDE = 1
+SCALING_FACTOR = 82247
 
 cwd = os.getcwd()
 
 
-def points_in_polygons(polygon, points_list):
+def point_in_polygons(user_point, polygons_list):
     """
     Takes a polygon and a list of points and returns a boolean array if the points are in the polygon
-    :param polygon:
-    :param points_list:
+    :param user_point:
+    :param polygons_list:
     :return:
     """
-    return np.array([polygon.contains(Point(point)) for point in points_list])
-
+    arr = np.array([polygon.contains(user_point) for polygon in polygons_list])
+    try:
+        poly_id = np.where(arr == True)[0][0] + 1
+        return int(poly_id)
+    except IndexError:
+        print("not in the polygon")
 
 def cast_json_into_list():
     try:
@@ -60,12 +67,18 @@ def project_long_lag_coord_into_cartesian(list_lat_long):
     # setup your projections
     # crs_wgs = proj.Proj(init='epsg:4326')  # assuming you're using WGS84 geographic
     crs_wgs = proj.Proj(init='epsg:3857')  # assuming you're using WGS3857 geographic
-    crs_bng = proj.Proj(init='epsg:4326')  # use a locally appropriate projected CRS
+    crs_bng = proj.Proj(init='epsg:2039')  # use a locally appropriate projected CRS
 
     return [(proj.transform(crs_wgs, crs_bng, lat_long[LONGITUDE], lat_long[LATITUDE])) for lat_long in list_lat_long]
 
 
 def gen_rdm_points_square(polygon, size):
+    """
+    Generate rdm points within a square box
+    :param polygon:
+    :param size:
+    :return:
+    """
     minx, miny, maxx, maxy = polygon.bounds
     box_points = list(box(minx, miny, maxx, maxy, ccw=True).exterior.coords)
     x = np.random.uniform(low=box_points[0][0], high=box_points[2][0], size=size)
@@ -74,6 +87,12 @@ def gen_rdm_points_square(polygon, size):
 
 
 def plot_polygon(polygon, size_points_distrib=50):
+    """
+    Plots polygon with bound box and sample distribution
+    :param polygon:
+    :param size_points_distrib:
+    :return:
+    """
     # Get the points
     list_points = list(polygon.exterior.coords)
     distances = np.array(scipy.spatial.distance.euclidean([elt[0] for elt in list_points], [elt[1] for elt in list_points]))
@@ -92,8 +111,8 @@ def plot_polygon(polygon, size_points_distrib=50):
     # Polygon
     plt.scatter(*zip(*list_points), color='blue')
     plt.plot(*zip(*list(list_points)), color='blue', linestyle="-.", alpha=0.2)
-    ax.set(xlim=[minx-avg_dist/10000, maxx+avg_dist/10000])
-    ax.set(ylim=[miny-avg_dist/10000, maxy+avg_dist/10000])
+    ax.set(xlim=[minx, maxx])
+    ax.set(ylim=[miny, maxy])
 
     # Limits
     rdm_points = gen_rdm_points_square(polygon, size_points_distrib)
@@ -112,7 +131,7 @@ def plot_polygon(polygon, size_points_distrib=50):
     plt.show()
 
 
-def distance_user_point_to_polygons(lat_u, long_u, polygon_list):
+def distance_user_point_to_polygons(user_point, polygon_list):
     """
     Takes a position of a user and returns a list of sorted distance with corresponding polygons
     :param lat_u:
@@ -120,60 +139,46 @@ def distance_user_point_to_polygons(lat_u, long_u, polygon_list):
     :param polygon_list:
     :return:
     """
-    list_polygons_distances = np.array([])
+    list_polygons_distances = []
+
+    for polygon in polygon_list:
+        dist = user_point.distance(polygon)
+        list_polygons_distances.append(dist)
+
+    #return sorted(list_polygons_distances, key=lambda x: x[1], reverse=True)
+    return list_polygons_distances
+
+
+def insert_rows_to_available_log(poly_id, time, found, n):
+    """
+    poly_id: to polygon id
+    time: a float 0 <= time <= 24
+    found: boolean
+    n: number of duplicate rows we want to add
+    """
+    with sqlite3.connect(DB_FILENAME) as con:
+        cur = con.cursor()
+        data = (list(zip(n*[poly_id], n*[time], n*[1.0*found])))
+        stmt = "INSERT INTO log_tbl (area_id, time, found) VALUES (?, ?, ?)"
+        cur.executemany(stmt, data)
+        cur.close()
+
+def report_insert_DB(lat_u, long_u, timestamp, is_found):
+    """
+    Takes the latitude & longitude, timestamp, is found, and inserts into the database
+    :param lat:
+    :param long:
+    :param timestamp:
+    :param is_found:
+    :return:
+    """
+
     coord_u = project_long_lag_coord_into_cartesian([[lat_u, long_u]])
     xu, yu = coord_u[0][0], coord_u[0][1]
     user_point = Point(xu, yu)
 
-    # Initialize
-    dist_min = user_point.distance(polygon_list[0])
-
-    for polygon in polygon_list:
-        dist = user_point.distance(polygon)
-        list_polygons_distances.extend([polygon, dist])
-
-    return sorted(list_polygons_distances, key=lambda x: x[1], reverse=True)
-
-
-
-
-def main():
-
-
-    #assert points_in_polygons(polygon, [(2, 3), (8, 9), (0.5, 0.5)]) == np.array([False, False, True])
-
-    # Transform R. input into list of coordinates
-    # jerusalem_polygon_points = [31.767425, 35.203268, 31.767156, 35.203171, 31.767092, 35.205059, 31.767886, 35.205413,
-    #                             31.768483, 35.205859, 31.768757, 35.20654, 31.768994, 35.207189, 31.769395, 35.208659,
-    #                             31.770061, 35.208557, 31.770043, 35.20809, 31.770312, 35.207897, 31.770162, 35.207135,
-    #                             31.769929, 35.207398, 31.769578, 35.206679, 31.768935, 35.205333, 31.768369, 35.204437]
-    #
-    #
-    # test_inside_outside = [31.768877, 35.20617, 31.768238, 35.205646, 31.769321, 35.207839, 31.76845, 35.206905, 31.768799,
-    #                        35.206951, 31.770379, 35.203011]
-    #
-    # jerusalem_points = coord_in_lat_long(jerusalem_polygon_points)
-    # jerusalem_polygon = Polygon(cast_long_lag_coord_into_cartesian(jerusalem_points))
-    #
-    # list_test_inside_outside = coord_in_lat_long(test_inside_outside)
-    # casted_inside_outside = cast_long_lag_coord_into_cartesian(list_test_inside_outside)
-    #
-    # print(jerusalem_polygon)
-    # print(points_in_polygons(jerusalem_polygon, casted_inside_outside))
-    # minx, miny, maxx, maxy = jerusalem_polygon.bounds
-    # print(minx, miny, maxx, maxy)
-    #
-    # print(box(minx, miny, maxx, maxy, ccw=True))
-
-    #plot_polygon(jerusalem_polygon)
-
-    # User input
-    lat_u, long_u = 32.052909, 34.772081
-
-    # Create my list of polygons
+    # Create my list of polygons from json
     json_data = cast_json_into_list()
-    print(json_data)
-
     polygons_lat_long_coord = json_coordinates(json_data)
 
     # project lat-long to a plan
@@ -182,9 +187,72 @@ def main():
     # creates a list of polygons
     polygons_list = np.array([Polygon(_) for _ in polygons_cartesians_coord])
 
-    print(polygons_list)
+    # list of distances
+    distances_list = np.array([distance_user_point_to_polygons(user_point, polygons_list)])
+    distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list])
+
+    # Returns ID of the polygon
+    poly_id = point_in_polygons(user_point, polygons_list)
 
 
+    # Insert into the DB the ID of the polygon
+    if poly_id :
+        insert_rows_to_available_log(poly_id, timestamp, is_found, n=100)
+
+
+def main():
+    #plot_polygon(jerusalem_polygon)
+
+    # Find scaling factor for distance
+    coord_p1 = project_long_lag_coord_into_cartesian([[32.052909,34.772081]])
+    coord_p2 = project_long_lag_coord_into_cartesian([[31.968647,34.800475]])
+    x1, y1 = coord_p1[0][0], coord_p1[0][1]
+    x2, y2 = coord_p2[0][0], coord_p2[0][1]
+    dist_two_points = Point(x1, y1).distance(Point(x2, y2))
+
+    factor_value = 9470/dist_two_points
+    print(factor_value)
+
+    # scaling factor * projected distance = real distance
+    SCALING_FACTOR = 82247
+
+    # User input
+    #lat_u, long_u = 32.052909, 34.772081 point next to ITC
+
+    lat_u, long_u = 31.76851105490533, 35.2048945426941
+
+    coord_u = project_long_lag_coord_into_cartesian([[lat_u, long_u]])
+    xu, yu = coord_u[0][0], coord_u[0][1]
+    user_point = Point(xu, yu)
+
+    # Create my list of polygons from json
+    json_data = cast_json_into_list()
+    polygons_lat_long_coord = json_coordinates(json_data)
+
+    # project lat-long to a plan
+    polygons_cartesians_coord = [project_long_lag_coord_into_cartesian(_) for _ in polygons_lat_long_coord]
+
+    # creates a list of polygons
+    polygons_list = np.array([Polygon(_) for _ in polygons_cartesians_coord])
+
+    # list of distances
+    distances_list = np.array([distance_user_point_to_polygons(user_point, polygons_list)])
+    distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list])
+
+    # Returns ID of the polygon
+    poly_id = point_in_polygons(user_point, polygons_list)
+    print("id is : {}".format(poly_id))
+
+    # Insert into the DB the ID of the polygon
+    #insert_rows_to_available_log(poly_id, )
+
+
+    print(distances_list_scaled)
+
+    #print(polygons_list)
+    #print(distances_list)
+
+    #plot_polygon(polygons_list[3])
 
 
 
@@ -192,4 +260,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-
+report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, True)
