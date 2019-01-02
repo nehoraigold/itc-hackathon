@@ -43,7 +43,9 @@ function reportSpot() {
 }
 
 function deleteMapMarkers() {
-    $(".leaflet-pane").slice(5).empty();
+    var panes = $('.leaflet-pane');
+    panes.slice(2,3).empty();
+    panes.slice(4).empty();
 }
 
 function getLongLatAndGoToAddress(address) {
@@ -97,7 +99,6 @@ function changeReportStatus() {
         mapElement.css({cursor:"grab"});
         deleteMapMarkers();
     }
-    console.log('reporting!')
 }
 
 function clearOpacityDiv() {
