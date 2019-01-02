@@ -40,7 +40,6 @@ function reportSpot() {
     var lat = $(this).attr('data-lat');
     var lng = $(this).attr('data-lng');
     $($(this)[0].parentNode).html("<span class='reported-text'>Thank You!</span>");
-    // console.log(lat, lng);
 }
 
 function deleteMapMarkers() {
@@ -82,11 +81,13 @@ function submitFunction(event) {
     event.preventDefault();
     var address = $("#form").children()[0].value;
     var time = $('#form').children()[1].value;
+    if (address.length < 3) {
+        return false;
+    }
     getLongLatAndGoToAddress(address);
 }
 
 function createPolygon(coordArrayOfArrays) {
-    console.log(coordArrayOfArrays);
     L.polygon(coordArrayOfArrays).addTo(map);
 }
 
@@ -128,9 +129,7 @@ $(document).ready(function () {
         url: '/get_areas',
         dataType:'json',
         success: function (resp) {
-            console.log(resp);
             for (var i = 0; i < resp.polygons.length; i++) {
-                console.log('creating polygon for ' + resp.polygons[i].Name);
                 createPolygon(resp.polygons[i].coords);
             }
         }
