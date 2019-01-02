@@ -13,13 +13,13 @@
    crossorigin=""></script>
     <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css" />
     <!--JQUERY-->
-	<!--<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>-->
+	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
     <script defer src="./js/logic.js"></script>
     <!--<script defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyD3Y0P0c85eejxOt59xXqTtULkZVuMktxk&callback=initMap'></script>-->
 </head>
 <body>
-    <form action="/action_page.php" class="addressForm">
-        <input type="text" placeholder='Enter an address' class="addressForm-item">
+    <form action="/search" class="addressForm">
+        <input type="text" placeholder='Enter an address' class="addressForm-item" name="address">
         <input type="datetime-local" name="datetime" class="addressForm-item">
         <input type="submit" value="Send" class="addressForm-item">
     </form>
