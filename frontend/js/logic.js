@@ -10,8 +10,8 @@ logo.addClass('bigLogo');
 $('body').append(logo);
 
 
-var map = L.map('map').setView([32.0853, 34.7818], 13);
-var reporting = true;
+var map = L.map('map').setView([32.0853, 34.7818], 15);
+var reporting = false;
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -43,7 +43,7 @@ function reportSpot() {
 }
 
 function deleteMapMarkers() {
-    $(".leaflet-pane").slice(2).empty();
+    $(".leaflet-pane").slice(5).empty();
 }
 
 function getLongLatAndGoToAddress(address) {
@@ -68,9 +68,7 @@ function getLongLatAndGoToAddress(address) {
 }
 
 function goToAddress(lat, lng, street) {
-    opacityDiv.removeClass('opacityDiv');
-    logo.addClass('smallLogo');
-    logo.removeClass('bigLogo');
+    clearOpacityDiv();
     deleteMapMarkers();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
@@ -85,18 +83,50 @@ function submitFunction(event) {
 }
 
 function createPolygon(coordArrayOfArrays) {
-    L.polygon(coordArrayOfArrays, { color: "gray" }).addTo(map);
+    console.log(coordArrayOfArrays);
+    L.polygon(coordArrayOfArrays).addTo(map);
 }
 
+function changeReportStatus() {
+    clearOpacityDiv();
+    reporting = !reporting;
+    var mapElement = $("#map");
+    if (reporting) {
+        mapElement.css({cursor:"pointer"});
+    } else {
+        mapElement.css({cursor:"grab"});
+        deleteMapMarkers();
+    }
+    console.log('reporting!')
+}
+
+function clearOpacityDiv() {
+    opacityDiv.remove();
+    logo.addClass('smallLogo');
+    logo.removeClass('bigLogo');
+}
+
+$("#form").submit(submitFunction);
+
+// Address autocomplete
+
+placeSearch({
+    key: `${MAPQUEST_API_KEY}`,
+    container: document.querySelector('#search-input')
+  });
+  
 $(document).ready(function () {
     $("#form").submit(submitFunction);
+    $("#report-flag").click(changeReportStatus);
     $.ajax({
         type: 'GET',
         url: '/get_areas',
-        contentType: 'application/json',
+        dataType:'json',
         success: function (resp) {
+            console.log(resp);
             for (var i = 0; i < resp.polygons.length; i++) {
-                createPolygon(resp.polygons[i].coord);
+                console.log('creating polygon for ' + resp.polygons[i].Name);
+                createPolygon(resp.polygons[i].coords);
             }
         }
     })

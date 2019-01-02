@@ -1,4 +1,5 @@
-from bottle import run, get, static_file, request, response
+from bottle import run, get, static_file, request
+import json
 
 
 @get("/js/<filepath:re:.*\.js>")
@@ -13,7 +14,7 @@ def css(filepath):
 
 @get("/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
 def img(filepath):
-    return static_file(filepath, root="images")
+    return static_file(filepath, root="../frontend/images")
 
 
 @get("/")
@@ -23,7 +24,10 @@ def html():
 
 @get('/get_areas')
 def get_polygons():
-    return "ok"
+    with open('./polygons_coordinates/polygons.json') as polygons_file:
+        polygons = json.loads(polygons_file.read())
+        print(polygons)
+        return json.dumps({"polygons": polygons})
 
 
 def main():
