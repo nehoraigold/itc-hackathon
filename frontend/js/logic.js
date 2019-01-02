@@ -43,7 +43,7 @@ function reportSpot() {
 }
 
 function deleteMapMarkers() {
-    $(".leaflet-pane").slice(2).empty();
+    $(".leaflet-pane").slice(5).empty();
 }
 
 function getLongLatAndGoToAddress(address) {
@@ -83,7 +83,8 @@ function submitFunction(event) {
 }
 
 function createPolygon(coordArrayOfArrays) {
-    L.polygon(coordArrayOfArrays, { color: "gray" }).addTo(map);
+    console.log(coordArrayOfArrays);
+    L.polygon(coordArrayOfArrays).addTo(map);
 }
 
 function changeReportStatus() {
@@ -100,7 +101,7 @@ function changeReportStatus() {
 }
 
 function clearOpacityDiv() {
-    opacityDiv.removeClass('opacityDiv');
+    opacityDiv.remove();
     logo.addClass('smallLogo');
     logo.removeClass('bigLogo');
 }
@@ -108,15 +109,16 @@ function clearOpacityDiv() {
 $(document).ready(function () {
     $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
-    // to get polygons later
-    // $.ajax({
-    //     type: 'GET',
-    //     url: '/get_areas',
-    //     contentType: 'application/json',
-    //     success: function (resp) {
-    //         for (var i = 0; i < resp.polygons.length; i++) {
-    //             createPolygon(resp.polygons[i].coord);
-    //         }
-    //     }
-    // })
+    $.ajax({
+        type: 'GET',
+        url: '/get_areas',
+        dataType:'json',
+        success: function (resp) {
+            console.log(resp);
+            for (var i = 0; i < resp.polygons.length; i++) {
+                console.log('creating polygon for ' + resp.polygons[i].Name);
+                createPolygon(resp.polygons[i].coords);
+            }
+        }
+    })
 });
