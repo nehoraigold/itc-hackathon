@@ -12,11 +12,20 @@ body{
     text-align:center;
 }
 
-.addressForm-item, form button {
-    border-radius: 20px;
-    padding: 5px;
+.addressForm-item {
+    border-radius: 10px;
+    padding: 5px 10px;
     font-size: 20px;
     height: 35px;
+    border-width:1px;
+}
+
+input[name='address'] {
+    width: 300px;
+}
+
+input[name='datetime'] {
+    width: 250px;
 }
 
 .form-container {
@@ -65,7 +74,7 @@ body{
 }
 
 .bigLogo {
-    background-image: url(../images/LogoMakr_1LY3yC.png);
+    background-image: url('../images/LogoMakr_1LY3yC.png');
     vertical-align: middle;
     z-index: 123;
     position: absolute;

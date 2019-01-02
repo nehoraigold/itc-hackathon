@@ -68,9 +68,7 @@ function getLongLatAndGoToAddress(address) {
 }
 
 function goToAddress(lat, lng, street) {
-    opacityDiv.removeClass('opacityDiv');
-    logo.addClass('smallLogo');
-    logo.removeClass('bigLogo');
+    clearOpacityDiv();
     deleteMapMarkers();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
@@ -88,8 +86,21 @@ function createPolygon(coordArrayOfArrays) {
     L.polygon(coordArrayOfArrays, { color: "gray" }).addTo(map);
 }
 
+function changeReportStatus() {
+    clearOpacityDiv();
+    reporting = !reporting;
+    console.log('reporting!')
+}
+
+function clearOpacityDiv() {
+    opacityDiv.removeClass('opacityDiv');
+    logo.addClass('smallLogo');
+    logo.removeClass('bigLogo');
+}
+
 $(document).ready(function () {
     $("#form").submit(submitFunction);
+    $("#report-flag").click(changeReportStatus);
     $.ajax({
         type: 'GET',
         url: '/get_areas',
