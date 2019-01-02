@@ -55,22 +55,40 @@ input[name='datetime'] {
     position:fixed;
 }
 
-#report-spot {
+.report-btn {
+    border: 0;
     font-family: 'Noto Sans KR', sans-serif;
     outline:none;
     border-radius:5px;
     padding:7px 10px;
+}
+
+#no-space-found {
     background: #febbbb; /* Old browsers */
     background: -moz-linear-gradient(top, #febbbb 0%, #fe9090 45%, #ff5c5c 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */    border: 0;
+    background: linear-gradient(to bottom, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */    
 }
 
-#report-spot:active {
+#no-space-found:active {
     background: #febbbb; /* Old browsers */
     background: -moz-linear-gradient(bottom, #febbbb 0%, #fe9090 45%, #ff5c5c 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(bottom, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(to top, #febbbb 0%,#fe9090 45%,#ff5c5c 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+#space-found {
+    background: rgba(210,255,82,1);
+    background: -moz-linear-gradient(top, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
+    background: linear-gradient(to bottom, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
+}
+
+#space-found:active {
+    background: rgba(210,255,82,1);
+    background: -moz-linear-gradient(bottom, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
+    background: -webkit-linear-gradient(bottom, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
+    background: linear-gradient(to top, rgba(210,255,82,1) 0%, rgba(145,232,66,1) 100%);
 }
 
 .opacityDiv {
@@ -112,6 +130,7 @@ input[name='datetime'] {
 }
 
 .reported-text {
+    text-align:center;
     color:green;
     font-family: 'Noto Sans KR', sans-serif;
 }

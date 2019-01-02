@@ -30,19 +30,29 @@ map.on('click', function (event) {
 function createReportMarker(event) {
     var lat = event.latlng.lat;
     var lng = event.latlng.lng;
-    var popup = L.popup({ closeButton: false }).setContent(`<button id='report-spot' data-lat='${lat}' data-lng='${lng}'>Report</button>`);
+    var popup = L.popup({ closeButton: false }).setContent(
+        `<button class='report-btn' id='space-found' data-lat='${lat}' data-lng='${lng}'>Space Found</button>
+        <button class='report-btn' id='no-space-found' data-lat='${lat}' data-lng='${lng}'>No Luck</button>`
+        );
     L.marker([lat, lng]).addTo(map).bindPopup(popup).openPopup();
-    $("#report-spot").click(reportSpot)
+    $(".report-btn").click(reportSpot)
     map.panTo([lat, lng]);
 }
 
 function reportSpot() {
     var lat = $(this).attr('data-lat');
-    var lng = $(this).attr('data-lng');
+    var long = $(this).attr('data-lng');
+    var isFound = $(this).attr('id') === "no-space-found" ? 0 : 1;
     var date = new Date();
-    var hour = parseFloat(date.getHours() + (date.getMinutes() / 60));
-    console.log([lat, lng], hour);
-    $($(this)[0].parentNode).html("<span class='reported-text'>Thank You!</span>");
+    var timestamp = parseFloat(date.getHours() + (date.getMinutes() / 60));
+    $($(this)[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
+    var new_data = {
+        lat: lat,
+        long: long,
+        timestamp: timestamp,
+        is_found: isFound
+    };
+    return JSON.stringify(new_data)
 }
 
 function deleteMapMarkers() {
