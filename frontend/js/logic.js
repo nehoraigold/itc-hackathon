@@ -92,12 +92,15 @@ function createPolygon(coordArrayOfArrays) {
 
 function changeReportStatus() {
     clearOpacityDiv();
+    var reportButton = $("#report-flag");
     reporting = !reporting;
     var mapElement = $("#map");
     if (reporting) {
         mapElement.css({cursor:"pointer"});
+        reportButton.attr('value',"Stop Reporting")
     } else {
         mapElement.css({cursor:"grab"});
+        reportButton.attr('value',"Report a Free Space")
         deleteMapMarkers();
     }
 }
