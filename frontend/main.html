@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hackaton</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-   crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-   crossorigin=""></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css" />
-    <meta http-equiv="x-ua-compatible" content="IE=edge">
-    <!--JQUERY-->
-	<script  src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="   crossorigin="anonymous"></script>
-    <script defer src="./js/logic.js"></script>
 
-    
-</head>
-<body>
-    <form action="/search" class="addressForm" id='form'>
-        <input type="text" placeholder='Enter an address' class="addressForm-item" name="address">
-        <input type="datetime-local" name="datetime" class="addressForm-item">
-        <input type="submit" value="Send" class="addressForm-item">
-    </form>
-    <div id="map"></div>
-    
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Hackaton</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+            crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+            crossorigin=""></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css" />
+        <meta http-equiv="x-ua-compatible" content="IE=edge">
+        <!--JQUERY-->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+        <script defer src="./js/logic.js"></script>
+
+
+    </head>
+
+    <body>
+        <div class='form-container'>
+            <form action="/search" class="addressForm" id='form'>
+                <input type="text" placeholder='Enter an address' class="addressForm-item" name="address">
+                <input type="datetime-local" name="datetime" class="addressForm-item">
+                <input type="submit" value="Send" class="addressForm-item">
+                <button>Report A Free Space!</button>
+            </form>
+        </div>
+        <div id="map"></div>
+
+    </body>
+
 </html>
