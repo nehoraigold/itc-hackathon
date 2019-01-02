@@ -39,7 +39,8 @@ function createReportMarker(event) {
 function reportSpot() {
     var lat = $(this).attr('data-lat');
     var lng = $(this).attr('data-lng');
-    console.log(lat, lng);
+    $($(this)[0].parentNode).html("<span class='reported-text'>Thank You!</span>");
+    // console.log(lat, lng);
 }
 
 function deleteMapMarkers() {
