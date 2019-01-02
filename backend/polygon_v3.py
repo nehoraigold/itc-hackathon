@@ -14,6 +14,8 @@ import os
 LATITUDE = 0
 LONGITUDE = 1
 
+cwd = os.getcwd()
+
 
 def points_in_polygons(polygon, points_list):
     """
@@ -49,7 +51,7 @@ def coord_in_lat_long(list_lat_long):
     return [[list_lat_long[2 * counter], list_lat_long[2 * counter + 1]] for counter in range(mid)]
 
 
-def cast_long_lag_coord_into_cartesian(list_lat_long):
+def project_long_lag_coord_into_cartesian(list_lat_long):
     """
     Cast geographic coordinates (long, lat) into cartesian coordinates
     :param list_lat_long:
@@ -109,6 +111,7 @@ def plot_polygon(polygon, size_points_distrib=50):
 
     plt.show()
 
+
 def distance_user_point_to_polygons(lat_u, long_u, polygon_list):
     """
     Takes a position of a user and returns a list of sorted distance with corresponding polygons
@@ -118,7 +121,7 @@ def distance_user_point_to_polygons(lat_u, long_u, polygon_list):
     :return:
     """
     list_polygons_distances = np.array([])
-    coord_u = cast_long_lag_coord_into_cartesian([[lat_u, long_u]])
+    coord_u = project_long_lag_coord_into_cartesian([[lat_u, long_u]])
     xu, yu = coord_u[0][0], coord_u[0][1]
     user_point = Point(xu, yu)
 
@@ -164,16 +167,28 @@ def main():
 
     #plot_polygon(jerusalem_polygon)
 
-    # Create my list of polygons
-    #data = cast_json_into_list()
-    #print(data)
-
-
     # User input
     lat_u, long_u = 32.052909, 34.772081
 
-    cwd = os.getcwd()
-    print(cwd)
+    # Create my list of polygons
+    json_data = cast_json_into_list()
+    print(json_data)
+
+    polygons_lat_long_coord = json_coordinates(json_data)
+
+    # project lat-long to a plan
+    polygons_cartesians_coord = [project_long_lag_coord_into_cartesian(_) for _ in polygons_lat_long_coord]
+
+    # creates a list of polygons
+    polygons_list = np.array([Polygon(_) for _ in polygons_cartesians_coord])
+
+    print(polygons_list)
+
+
+
+
+
+
 if __name__ == '__main__':
     main()
 
