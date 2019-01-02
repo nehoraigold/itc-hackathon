@@ -1,0 +1,4 @@
+curpos Z: 18 C: 31.768574,35.20629
+cursel: polygon [object Object]; pos: undefined ; path: [ 31.767425,35.203268 , 31.767156,35.203171 , 31.767092,35.205059 , 31.767886,35.205413 , 31.768483,35.205859 , 31.768757,35.20654 , 31.768994,35.207189 , 31.769395,35.208659 , 31.770061,35.208557 , 31.770043,35.20809 , 31.770312,35.207897 , 31.770162,35.207135 , 31.769929,35.207398 , 31.769578,35.206679 , 31.768935,35.205333 , 31.768369,35.204437 , ] ; bounds: undefined ; Cb: undefined ; radius: undefined ; Cr: undefined
+Note: markers can be selected, but are not graphically indicated; can be deleted, but cannot have their color changed.
+
