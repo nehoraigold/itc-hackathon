@@ -3,12 +3,12 @@ from bottle import run, get, static_file
 
 @get("/js/<filepath:re:.*\.js>")
 def js(filepath):
-    return static_file(filepath, root="js")
+    return static_file(filepath, root="../frontend/js")
 
 
 @get("/css/<filepath:re:.*\.css>")
 def css(filepath):
-    return static_file(filepath, root="css")
+    return static_file(filepath, root="../frontend/css")
 
 
 @get("/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
@@ -18,7 +18,7 @@ def img(filepath):
 
 @get("/")
 def html():
-    return static_file("index.html", root='')
+    return static_file("main.html", root='../frontend')
 
 
 def main():
