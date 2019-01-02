@@ -14,12 +14,13 @@ body{
 }
 
 .addressForm-item {
+    outline:none;
     border-radius: 10px;
     padding: 5px 10px;
     font-size: 20px;
-    height: 35px;
     border-width:1px;
     margin: 3px; 
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 
@@ -55,6 +56,7 @@ input[name='datetime'] {
 }
 
 #report-spot {
+    font-family: 'Noto Sans KR', sans-serif;
     outline:none;
     border-radius:5px;
     padding:7px 10px;
@@ -111,4 +113,5 @@ input[name='datetime'] {
 
 .reported-text {
     color:green;
+    font-family: 'Noto Sans KR', sans-serif;
 }

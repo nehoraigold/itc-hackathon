@@ -30,25 +30,29 @@ map.on('click', function (event) {
 function createReportMarker(event) {
     var lat = event.latlng.lat;
     var lng = event.latlng.lng;
-    var popup = L.popup({closeButton: false}).setContent(`<button id='report-spot' data-lat='${lat}' data-lng='${lng}'>Report</button>`);
-    L.marker([lat,lng]).addTo(map).bindPopup(popup).openPopup();
+    var popup = L.popup({ closeButton: false }).setContent(`<button id='report-spot' data-lat='${lat}' data-lng='${lng}'>Report</button>`);
+    L.marker([lat, lng]).addTo(map).bindPopup(popup).openPopup();
     $("#report-spot").click(reportSpot)
-    map.panTo([lat,lng]);
+    map.panTo([lat, lng]);
 }
 
 function reportSpot() {
     var lat = $(this).attr('data-lat');
     var lng = $(this).attr('data-lng');
+    var date = new Date();
+    var hour = parseFloat(date.getHours() + (date.getMinutes() / 60));
+    console.log([lat, lng], hour);
     $($(this)[0].parentNode).html("<span class='reported-text'>Thank You!</span>");
 }
 
 function deleteMapMarkers() {
     var panes = $('.leaflet-pane');
-    panes.slice(2,3).empty();
+    panes.slice(2, 3).empty();
     panes.slice(4).empty();
 }
 
 function getLongLatAndGoToAddress(address) {
+    //overlay with loading gif?
     $.ajax({
         type: "POST",
         url: `http://www.mapquestapi.com/geocoding/v1/address?key=${MAPQUEST_API_KEY}`,
@@ -58,10 +62,15 @@ function getLongLatAndGoToAddress(address) {
         dataType: 'json',
         contentType: 'application/json',
         success: function (resp) {
-            var lat = resp.results[0].locations[0].latLng.lat;
-            var lng = resp.results[0].locations[0].latLng.lng;
-            var street = resp.results[0].locations[0].street;
-            goToAddress(lat, lng, street)
+            //remove overlay?
+            if (resp.results[0].locations.length !== 0) {
+                var lat = resp.results[0].locations[0].latLng.lat;
+                var lng = resp.results[0].locations[0].latLng.lng;
+                var street = resp.results[0].locations[0].street;
+                goToAddress(lat, lng, street)
+            } else {
+                //if no results appear?
+            }
         },
         error: function (resp) {
             console.log(resp);
@@ -79,16 +88,23 @@ function goToAddress(lat, lng, street) {
 
 function submitFunction(event) {
     event.preventDefault();
-    var address = $("#form").children()[0].value;
-    var time = $('#form').children()[1].value;
-    if (address.length < 3) {
-        return false;
-    }
+    var address = $(".infos").children()[0].value;
+    var time = $('.infos').children()[1].value;
     getLongLatAndGoToAddress(address);
 }
 
 function createPolygon(coordArrayOfArrays) {
     L.polygon(coordArrayOfArrays).addTo(map);
+}
+
+function parseTimestamp(timestamp) {
+    var timestamp = timestamp.split("T");
+    var time = timestamp[1];
+    time = time.split(":");
+    var hour = parseInt(time[0]);
+    var minute = parseInt(time[1]);
+    var parsedTime = parseFloat(hour + (minute / 60));
+    return parsedTime;
 }
 
 function changeReportStatus() {
@@ -97,11 +113,11 @@ function changeReportStatus() {
     reporting = !reporting;
     var mapElement = $("#map");
     if (reporting) {
-        mapElement.css({cursor:"pointer"});
-        reportButton.attr('value',"Stop Reporting")
+        mapElement.css({ cursor: "pointer" });
+        reportButton.attr('value', "Stop Reporting")
     } else {
-        mapElement.css({cursor:"grab"});
-        reportButton.attr('value',"Report a Free Space")
+        mapElement.css({ cursor: "grab" });
+        reportButton.attr('value', "Report a Free Space")
         deleteMapMarkers();
     }
 }
@@ -120,15 +136,15 @@ placeSearch({
     key: `${MAPQUEST_API_KEY}`,
     container: document.querySelector('#search-input'),
     style: false
-  });
+});
 
 $(document).ready(function () {
-    $("#form").submit(submitFunction);
+    // $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
     $.ajax({
         type: 'GET',
         url: '/get_areas',
-        dataType:'json',
+        dataType: 'json',
         success: function (resp) {
             for (var i = 0; i < resp.polygons.length; i++) {
                 createPolygon(resp.polygons[i].coords);
