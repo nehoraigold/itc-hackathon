@@ -107,3 +107,7 @@ input[name='datetime'] {
     right:0;
     top:20px;
 }
+
+.reported-text {
+    color:green;
+}
