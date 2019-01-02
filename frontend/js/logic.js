@@ -1,6 +1,15 @@
 var MAPBOX_KEY = 'sk.eyJ1IjoibmVob3JhaWdvbGQiLCJhIjoiY2pxZjVmYzh6NGxzODQybGN5bTlwNHBpeiJ9.ruE0eqcqGrt8_hfv3VOGBg';
 var MAPQUEST_API_KEY = "VpY2AF2afXCdfAKEBPGgxnv0tRsF1Rnk";
 
+var opacityDiv = $('<div/>');
+opacityDiv.addClass('opacityDiv');
+$('body').append(opacityDiv);
+
+var logo = $('<div/>');
+logo.addClass('bigLogo');
+$('body').append(logo);
+
+
 var map = L.map('map').setView([32.0853, 34.7818], 13);
 var reporting = true;
 
@@ -59,6 +68,9 @@ function getLongLatAndGoToAddress(address) {
 }
 
 function goToAddress(lat, lng, street) {
+    opacityDiv.removeClass('opacityDiv');
+    logo.addClass('smallLogo');
+    logo.removeClass('bigLogo');
     deleteMapMarkers();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
