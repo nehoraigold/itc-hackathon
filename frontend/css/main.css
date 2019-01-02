@@ -18,28 +18,22 @@ body{
     font-size: 20px;
     height: 35px;
     border-width:1px;
+    margin: 3px; 
 }
 
-#search-input {
-    border-radius: 10px;
-    padding: 5px 10px;
-    font-size: 20px;
-    height: 35px;
-    width: 100px;
-    border-width:1px;
-}
 
 .infos{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 input[name='address'] {
-    width: 300px;
+    width: 450px;
 }
 
 input[name='datetime'] {
-    width: 250px;
+    width: 200px;
+    font-size: 14px;
 }
 
 .form-container {
@@ -47,6 +41,7 @@ input[name='datetime'] {
     position:relative;
     z-index:123456;
     margin-top: 5%;
+    
 }
 
 #map {

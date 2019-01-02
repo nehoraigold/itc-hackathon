@@ -39,7 +39,6 @@ function createReportMarker(event) {
 function reportSpot() {
     var lat = $(this).attr('data-lat');
     var lng = $(this).attr('data-lng');
-    console.log(lat, lng);
 }
 
 function deleteMapMarkers() {
@@ -111,9 +110,10 @@ $("#form").submit(submitFunction);
 
 placeSearch({
     key: `${MAPQUEST_API_KEY}`,
-    container: document.querySelector('#search-input')
+    container: document.querySelector('#search-input'),
+    style: false
   });
-  
+
 $(document).ready(function () {
     $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
