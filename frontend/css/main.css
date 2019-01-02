@@ -134,3 +134,15 @@ input[name='datetime'] {
     color:green;
     font-family: 'Noto Sans KR', sans-serif;
 }
+
+.table{
+    background-color: white;
+    z-index:123456;
+    width: 30%;
+    height: 18%;
+    position: absolute;
+    left: 2%;
+    bottom: 2%;
+    border-radius: 5px;
+    border: 1px solid rgb(123, 123, 209);
+}

@@ -30,7 +30,7 @@ def point_in_polygons(user_point, polygons_list):
     arr = np.array([polygon.contains(user_point) for polygon in polygons_list])
     try:
         poly_id = np.where(arr == True)[0][0] + 1
-        return poly_id
+        return int(poly_id)
     except IndexError:
         print("not in the polygon")
 
@@ -193,10 +193,11 @@ def report_insert_DB(lat_u, long_u, timestamp, is_found):
 
     # Returns ID of the polygon
     poly_id = point_in_polygons(user_point, polygons_list)
-    #print("id is : {}".format(poly_id))
+
 
     # Insert into the DB the ID of the polygon
-    insert_rows_to_available_log(poly_id, timestamp, is_found, n=100)
+    if poly_id :
+        insert_rows_to_available_log(poly_id, timestamp, is_found, n=100)
 
 
 def main():
@@ -259,4 +260,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-report_insert_DB(31.76851105490533, 35.2048945426941, 12.5, True)
+report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, True)
