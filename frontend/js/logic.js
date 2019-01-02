@@ -106,6 +106,15 @@ function clearOpacityDiv() {
     logo.removeClass('bigLogo');
 }
 
+$("#form").submit(submitFunction);
+
+// Address autocomplete
+
+placeSearch({
+    key: `${MAPQUEST_API_KEY}`,
+    container: document.querySelector('#search-input')
+  });
+  
 $(document).ready(function () {
     $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
