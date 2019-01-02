@@ -1,7 +1,16 @@
 var MAPBOX_KEY = 'sk.eyJ1IjoibmVob3JhaWdvbGQiLCJhIjoiY2pxZjVmYzh6NGxzODQybGN5bTlwNHBpeiJ9.ruE0eqcqGrt8_hfv3VOGBg';
 var MAPQUEST_API_KEY = "VpY2AF2afXCdfAKEBPGgxnv0tRsF1Rnk";
 
-var map = L.map('map').setView([32.0853, 34.7818], 20);
+var opacityDiv = $('<div/>');
+opacityDiv.addClass('opacityDiv');
+$('body').append(opacityDiv);
+
+var logo = $('<div/>');
+logo.addClass('bigLogo');
+$('body').append(logo);
+
+
+var map = L.map('map').setView([32.0853, 34.7818], 13);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -19,34 +28,33 @@ function getLongLatFromAddress(address) {
         },
         dataType: 'json',
         contentType: 'application/json',
-        success: function(resp) {
+        success: function (resp) {
+            console.log(resp)
             var lat = resp.results[0].locations[0].latLng.lat;
             var lng = resp.results[0].locations[0].latLng.lng;
-            newMap(lat, lng)
-            console.log(lat, lng);
-            return [lat, lng];
-            
+            var street = resp.results[0].locations[0].street;
+            goToAddress(lat, lng, street)
         },
-        error: function(resp) {
+        error: function (resp) {
             console.log(resp);
         }
     })
-} 
-
-function newMap(lat, lng){
-    var map = L.map('map').panto([lat, lng], 20);
 }
 
-function submitFunction(event){
+function goToAddress(lat, lng, street) {
+    opacityDiv.removeClass('opacityDiv');
+    logo.addClass('smallLogo');
+    logo.removeClass('bigLogo');
+    var latLng = [lat, lng];
+    L.marker(latLng).addTo(map).bindPopup(street).openPopup();
+    map.setZoom(20).panTo(latLng);
+}
+
+function submitFunction(event) {
     event.preventDefault();
-    document.querySelector('#dueDate').validity.badInput
-    var address = $('#locationTextField')
-    var date = $('#dueDate')
-    if (address.val().length > 0){
-        console.log('address');
-        
-        getLongLatFromAddress(address)
-    }
+    var address = $("#form").children()[0].value;
+    var time = $('#form').children()[1].value;
+    getLongLatFromAddress(address);
 }
 
-document.getElementById('submitButton').addEventListener('click',submitFunction);
+$("#form").submit(submitFunction);

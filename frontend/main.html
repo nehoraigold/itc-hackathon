@@ -20,11 +20,11 @@
     
 </head>
 <body>
-    <form class="addressForm">
-        <input type="text" placeholder='Enter an address' class="addressForm-item" id='locationTextField' required>
-        <input type="datetime-local" name="datetime" class="addressForm-item" id='dueDate'>
-        <input type="submit" value="Send" class="addressForm-item" id='submitButton' onclick="submitFunction()">
-    </form type="submit">
+    <form action="/search" class="addressForm" id='form'>
+        <input type="text" placeholder='Enter an address' class="addressForm-item" name="address">
+        <input type="datetime-local" name="datetime" class="addressForm-item">
+        <input type="submit" value="Send" class="addressForm-item">
+    </form>
     <div id="map"></div>
     
 </body>
