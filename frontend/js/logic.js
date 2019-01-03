@@ -9,6 +9,25 @@ var logo = $('<div/>');
 logo.addClass('bigLogo');
 $('body').append(logo);
 
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Get the modal
+var modal2 = document.getElementById('id02');
+          
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal2) {
+    modal2.style.display = "none";
+  }
+}
+
 
 var map = L.map('map').setView([32.0853, 34.7818], 15);
 var reporting = false;
@@ -130,9 +149,7 @@ function createPolygon(coordArrayOfArrays, probability) {
 }
 
 function parseTimestamp(timestamp) {
-    var timestamp = timestamp.split("T");
-    var time = timestamp[1];
-    time = time.split(":");
+    time = timestamp.split(":");
     var hour = parseInt(time[0]);
     var minute = parseInt(time[1]);
     var parsedTime = parseFloat(hour + (minute / 60));
