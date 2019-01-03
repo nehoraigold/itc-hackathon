@@ -9,6 +9,25 @@ var logo = $('<div/>');
 logo.addClass('bigLogo');
 $('body').append(logo);
 
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Get the modal
+var modal2 = document.getElementById('id02');
+          
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal2) {
+    modal2.style.display = "none";
+  }
+}
+
 
 var map = L.map('map').setView([32.0853, 34.7818], 15);
 var reporting = false;
