@@ -119,7 +119,7 @@ function reportSpot() {
     var button = $(this);
     var lat = button.attr('data-lat');
     var long = button.attr('data-lng');
-    var isFound = button.attr('id') === "no-space-found";
+    var isFound = button.attr('id') === "space-found";
     var date = new Date();
     var timestamp = parseFloat(date.getHours() + (date.getMinutes() / 60));
     var new_data = {
@@ -177,10 +177,10 @@ function goToAddress(lat, lng, street) {
     clearOpacityDiv();
     deleteMapMarkers();
     getTableData(lat, lng)
-    addTable();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
     map.flyTo(latLng);
+    addTable();
 }
 
 function submitFunction(event) {
@@ -217,7 +217,7 @@ function parseTimestamp(timestamp) {
 
 function changeReportStatus() {
     clearOpacityDiv();
-    addTable();
+    $("#table").remove();
     var reportButton = $("#report-flag");
     reporting = !reporting;
     var mapElement = $("#map");
