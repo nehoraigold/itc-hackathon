@@ -11,8 +11,65 @@ $('body').append(logo);
 
 var modal = document.getElementById('id01');
 
+var userName = [{ userName: "rebekawa", password: "reb" }]
+var infosLogIn = {
+    userName: '',
+    password: '',
+}
+
+function signUp() {
+    document.getElementById('id02').style.display = 'none'
+    infosLogIn = {
+        userName: $('#unameSU').val(),
+        password: $('#pswSU').val()
+    }
+
+    if (infosLogIn.userName.length < 1 || infosLogIn.password.length < 1) {
+       
+        console.log('berk');
+        return
+
+    }
+    else {
+        userName.push(infosLogIn)
+        console.log(userName);
+    }
+
+
+}
+
+
+function logIn() {
+
+    var newObject = {
+        userName: $('#unameLI').val(),
+        password: $('#pswLI').val()
+    }
+
+
+    for (var i = 0; i < userName.length; i++) {
+        if (userName[i].userName == newObject.userName && userName[i].password == newObject.password) {
+            $('.logSign').removeClass('logSign');
+            document.getElementById('id01').style.display = 'none';
+            var welcome = $('<div/>');
+            welcome.addClass('welcomeDiv');
+            welcome.text("Welcome " + newObject.userName);
+            $('body').append(welcome);
+            return;
+        }
+        else {
+            $('#unameLI').css('background-color', 'red');
+            $('#pswLI').css('background-color', 'red');
+            setTimeout(function () {
+                $('#unameLI').css('background-color', 'white');
+                $('#pswLI').css('background-color', '#f1f1f1');
+            }, 500);
+            return;
+        }
+    }
+}
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
@@ -20,12 +77,12 @@ window.onclick = function(event) {
 
 // Get the modal
 var modal2 = document.getElementById('id02');
-          
+
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal2) {
-    modal2.style.display = "none";
-  }
+window.onclick = function (event) {
+    if (event.target == modal2) {
+        modal2.style.display = "none";
+    }
 }
 
 
@@ -52,7 +109,7 @@ function createReportMarker(event) {
     var popup = L.popup({ closeButton: false }).setContent(
         `<button class='report-btn' id='space-found' data-lat='${lat}' data-lng='${lng}'>Space Found</button>
         <button class='report-btn' id='no-space-found' data-lat='${lat}' data-lng='${lng}'>No Luck</button>`
-        );
+    );
     L.marker([lat, lng]).addTo(map).bindPopup(popup).openPopup();
     $(".report-btn").click(reportSpot)
     map.panTo([lat, lng]);
@@ -78,10 +135,10 @@ function reportSpot() {
         dataType: "json",
         contentType: "application/json",
         data: new_data,
-        success: function() {
+        success: function () {
             $(button[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
         },
-        error: function() {
+        error: function () {
             $(button[0].parentNode).html("<div>Uh oh! Please try again...</div>");
         }
     })
@@ -148,7 +205,7 @@ function createPolygon(coordArrayOfArrays, probability) {
     } else {
         color = "blue";
     }
-    var poly = L.polygon(coordArrayOfArrays, {color: color});
+    var poly = L.polygon(coordArrayOfArrays, { color: color });
     poly.addTo(map);
 }
 

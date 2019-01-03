@@ -397,3 +397,21 @@ hr {
      width: 100%;
   }
 }
+
+.welcomeDiv{
+    z-index: 1234567890098876543456789;
+    position: absolute;
+    bottom: 1%;
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+    font-style: bold;
+    height: 100px;
+
+}
+
+.errorMess {
+    z-index: 12345678911876543456789;
+    font-size: 20px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
