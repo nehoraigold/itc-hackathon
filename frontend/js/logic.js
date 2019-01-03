@@ -42,16 +42,25 @@ function createReportMarker(event) {
 function reportSpot() {
     var lat = $(this).attr('data-lat');
     var long = $(this).attr('data-lng');
-    var isFound = $(this).attr('id') === "no-space-found" ? 0 : 1;
+    var isFound = $(this).attr('id') === "no-space-found";
     var date = new Date();
     var timestamp = parseFloat(date.getHours() + (date.getMinutes() / 60));
-    $($(this)[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
     var new_data = {
         lat: lat,
         long: long,
         timestamp: timestamp,
         is_found: isFound
     };
+    $.ajax({
+        type: "POST",
+        url: "/report",
+        dataType: "json",
+        contentType: "application/json",
+        data: new_data,
+        success: function() {
+            $($(this)[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
+        }
+    })
     return JSON.stringify(new_data)
 }
 
@@ -105,8 +114,19 @@ function submitFunction(event) {
     getLongLatAndGoToAddress(address);
 }
 
-function createPolygon(coordArrayOfArrays) {
-    L.polygon(coordArrayOfArrays).addTo(map);
+function createPolygon(coordArrayOfArrays, probability) {
+    var color;
+    if (probability > 0.8) {
+        color = "green";
+    } else if (probability >= .4) {
+        color = "goldenrod";
+    } else if (probability < .4) {
+        color = "red";
+    } else {
+        color = "blue";
+    }
+    var poly = L.polygon(coordArrayOfArrays, {color: color});
+    poly.addTo(map);
 }
 
 function parseTimestamp(timestamp) {
@@ -127,10 +147,10 @@ function changeReportStatus() {
     var mapElement = $("#map");
     if (reporting) {
         mapElement.css({ cursor: "pointer" });
-        reportButton.attr('value', "Stop Reporting")
+        reportButton.attr('value', "Stop Reporting").addClass("red").removeClass("green");
     } else {
         mapElement.css({ cursor: "grab" });
-        reportButton.attr('value', "Report a Free Space")
+        reportButton.attr('value', "Report a Free Space").addClass("green").removeClass("red");
         deleteMapMarkers();
     }
 }
@@ -148,13 +168,22 @@ var column = $('<tr/>');
 table.append(column);
 
 function addTable() {
-    
     table.addClass('table');
     column.addClass('column');
-    
 }
 
-$("#form").submit(submitFunction);
+function renderPolygons() {
+    $.ajax({
+        type: 'GET',
+        url: '/get_areas',
+        dataType: 'json',
+        success: function (resp) {
+            for (var i = 0; i < resp.polygons.length; i++) {
+                createPolygon(resp.polygons[i].coords, resp.polygons[i].probability);
+            }
+        }
+    })
+}
 
 // Address autocomplete
 
@@ -165,18 +194,8 @@ $("#form").submit(submitFunction);
 //   });
 
 
-
 $(document).ready(function () {
-    // $("#form").submit(submitFunction);
+    $("#form").submit(submitFunction);
     $("#report-flag").click(changeReportStatus);
-    $.ajax({
-        type: 'GET',
-        url: '/get_areas',
-        dataType: 'json',
-        success: function (resp) {
-            for (var i = 0; i < resp.polygons.length; i++) {
-                createPolygon(resp.polygons[i].coords);
-            }
-        }
-    })
+    renderPolygons();
 });
