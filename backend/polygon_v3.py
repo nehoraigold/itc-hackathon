@@ -8,10 +8,9 @@ from scipy import spatial
 import json
 import os
 import pandas as pd
-from probability import prob_calc
-
-
 import sqlite3
+
+
 DB_FILENAME = 'available_log.db'
 
 LATITUDE = 0
@@ -204,6 +203,22 @@ def report_insert_DB(lat_u, long_u, timestamp, is_found):
     if poly_id :
         insert_rows_to_available_log(poly_id, timestamp, is_found, n=100)
 
+
+def calculate_probs(user_time, delta=10/60):
+    delta = (10/60)
+    with sqlite3.connect(DB_FILENAME) as con:
+            cur = con.cursor()
+            stmt = """  SELECT AVG(found)
+                        FROM log_tbl 
+                        WHERE (? - ? < time) AND (time < ? + ?)
+                        GROUP BY area_id
+                        """
+            cur.execute(stmt, (user_time,delta,user_time,delta))
+            res = [p[0] for p in cur.fetchall()]
+            cur.close()
+    return res
+
+
 def find_parking_spot(lat_u, long_u, timestamp):
     """
     Returns a json of a dataframe for giving different probabilities of finding a place and the distance
@@ -232,19 +247,22 @@ def find_parking_spot(lat_u, long_u, timestamp):
     distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list])
 
     # Calls the probability
-    probas = prob_calc(timestamp)
+    probas = calculate_probs(timestamp)
+    probas_display = [(str(round(proba*100)) + "%") for proba in calculate_probs(timestamp)]
 
     # Gets the names of the places
     places_name = json_names(json_data)
 
     # Combined metric
-    metrics = np.array([probas[i]*distances_list_scaled[i] for i in range(len(places_name))])
+    metrics = np.array([round(100*probas[i]/(distances_list_scaled.ravel()[i]/100)) for i in range(len(places_name))])
 
     print(places_name)
     print(distances_list_scaled.ravel())
+    print(probas)
 
     # Creates the dataframe
-    df = pd.DataFrame.from_dict(data={'place': places_name, 'distance': distances_list_scaled.ravel(), 'chance': probas, 'metric': metrics})
+    df = pd.DataFrame.from_dict(data={'place': places_name, 'distance': distances_list_scaled.ravel(), 'chance': probas_display, 'score': metrics})
+    df = df.sort_values('score', ascending=False)
 
     json_table = df.to_json
 
@@ -313,4 +331,4 @@ if __name__ == '__main__':
 
 #report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, False)
 
-#print(find_parking_spot(32.052909,34.772081, 12.5))
+print(find_parking_spot(32.052909,34.772081, 12.5))
