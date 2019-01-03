@@ -244,7 +244,7 @@ def find_parking_spot(lat_u, long_u, timestamp):
 
     # list of distances
     distances_list = np.array([distance_user_point_to_polygons(user_point, polygons_list)])
-    distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list])
+    distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list]).ravel()
 
     # Calls the probability
     probas = calculate_probs(timestamp)
@@ -254,11 +254,15 @@ def find_parking_spot(lat_u, long_u, timestamp):
     places_name = json_names(json_data)
 
     # Combined metric
-    metrics = np.array([round(100*probas[i]/(distances_list_scaled.ravel()[i]/100)) for i in range(len(places_name))])
+    #probas_s = (probas - np.array(probas).mean()) / np.array(probas).std()
+    #distances_list_scaled_s = (distances_list_scaled - distances_list_scaled.mean()) / distances_list_scaled.std()
+    #print(probas_s)
+    #print(distances_list_scaled_s)
+    metrics = np.array([round(10**5*probas[i]**4/distances_list_scaled[i],2) for i in range(len(places_name))])
 
-    print(places_name)
-    print(distances_list_scaled.ravel())
-    print(probas)
+    #print(places_name)
+    #print(distances_list_scaled.ravel())
+    #print(probas)
 
     # Creates the dataframe
     df = pd.DataFrame.from_dict(data={'place': places_name, 'distance': distances_list_scaled.ravel(), 'chance': probas_display, 'score': metrics})
@@ -324,11 +328,9 @@ def main():
     #plot_polygon(polygons_list[3])
 
 
-
-
 if __name__ == '__main__':
     main()
 
 #report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, False)
 
-print(find_parking_spot(32.052909,34.772081, 12.5))
+print(find_parking_spot(32.052909,34.772081,9))
