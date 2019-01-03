@@ -40,9 +40,10 @@ function createReportMarker(event) {
 }
 
 function reportSpot() {
-    var lat = $(this).attr('data-lat');
-    var long = $(this).attr('data-lng');
-    var isFound = $(this).attr('id') === "no-space-found";
+    var button = $(this);
+    var lat = button.attr('data-lat');
+    var long = button.attr('data-lng');
+    var isFound = button.attr('id') === "no-space-found";
     var date = new Date();
     var timestamp = parseFloat(date.getHours() + (date.getMinutes() / 60));
     var new_data = {
@@ -51,6 +52,7 @@ function reportSpot() {
         timestamp: timestamp,
         is_found: isFound
     };
+    console.log(new_data);
     $.ajax({
         type: "POST",
         url: "/report",
@@ -58,10 +60,12 @@ function reportSpot() {
         contentType: "application/json",
         data: new_data,
         success: function() {
-            $($(this)[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
+            $(button[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
+        },
+        error: function() {
+            $(button[0].parentNode).html("<div>Uh oh! Please try again...</div>");
         }
     })
-    return JSON.stringify(new_data)
 }
 
 function deleteMapMarkers() {
