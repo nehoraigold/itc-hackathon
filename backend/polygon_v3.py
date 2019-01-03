@@ -121,7 +121,7 @@ def plot_polygon(polygon, size_points_distrib=50):
     # Limits
     rdm_points = gen_rdm_points_square(polygon, size_points_distrib)
     # creates mask
-    is_in_distrib = points_in_polygons(polygon, rdm_points)
+    is_in_distrib = point_in_polygons(polygon, rdm_points)
     print(rdm_points[is_in_distrib])
 
     # Points in
