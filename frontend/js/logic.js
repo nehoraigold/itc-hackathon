@@ -11,8 +11,65 @@ $('body').append(logo);
 
 var modal = document.getElementById('id01');
 
+var userName = [{ userName: "rebekawa", password: "reb" }]
+var infosLogIn = {
+    userName: '',
+    password: '',
+}
+
+function signUp() {
+    document.getElementById('id02').style.display = 'none'
+    infosLogIn = {
+        userName: $('#unameSU').val(),
+        password: $('#pswSU').val()
+    }
+
+    if (infosLogIn.userName.length < 1 || infosLogIn.password.length < 1) {
+
+        return
+
+    }
+    else {
+        userName.push(infosLogIn);
+        return;
+
+    }
+
+
+}
+
+
+function logIn() {
+
+    var newObject = {
+        userName: $('#unameLI').val(),
+        password: $('#pswLI').val()
+    }
+
+
+    for (var i = 0; i < userName.length; i++) {
+        if (userName[i].userName == newObject.userName && userName[i].password == newObject.password) {
+            $('.logSign').removeClass('logSign');
+            document.getElementById('id01').style.display = 'none';
+            var welcome = $('<div/>');
+            welcome.addClass('welcomeDiv');
+            welcome.text("Welcome " + newObject.userName);
+            $('body').append(welcome);
+            return;
+        }
+        else {
+            $('#unameLI').css('background-color', 'red');
+            $('#pswLI').css('background-color', 'red');
+            setTimeout(function () {
+                $('#unameLI').css('background-color', 'white');
+                $('#pswLI').css('background-color', '#f1f1f1');
+            }, 500);
+            return;
+        }
+    }
+}
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
@@ -20,12 +77,12 @@ window.onclick = function(event) {
 
 // Get the modal
 var modal2 = document.getElementById('id02');
-          
+
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal2) {
-    modal2.style.display = "none";
-  }
+window.onclick = function (event) {
+    if (event.target == modal2) {
+        modal2.style.display = "none";
+    }
 }
 
 
@@ -52,7 +109,7 @@ function createReportMarker(event) {
     var popup = L.popup({ closeButton: false }).setContent(
         `<button class='report-btn' id='space-found' data-lat='${lat}' data-lng='${lng}'>Space Found</button>
         <button class='report-btn' id='no-space-found' data-lat='${lat}' data-lng='${lng}'>No Luck</button>`
-        );
+    );
     L.marker([lat, lng]).addTo(map).bindPopup(popup).openPopup();
     $(".report-btn").click(reportSpot)
     map.panTo([lat, lng]);
@@ -120,6 +177,7 @@ function goToAddress(lat, lng, street) {
     clearOpacityDiv();
     deleteMapMarkers();
     getTableData(lat, lng)
+    addTable();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
     map.flyTo(latLng);
