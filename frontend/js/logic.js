@@ -52,18 +52,14 @@ function reportSpot() {
         timestamp: timestamp,
         is_found: isFound
     };
-    console.log(new_data);
     $.ajax({
         type: "POST",
         url: "/report",
         dataType: "json",
         contentType: "application/json",
         data: new_data,
-        success: function() {
+        success: function(resp) {
             $(button[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
-        },
-        error: function() {
-            $(button[0].parentNode).html("<div>Uh oh! Please try again...</div>");
         }
     })
 }

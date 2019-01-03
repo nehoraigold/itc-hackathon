@@ -1,6 +1,6 @@
-from bottle import run, get, static_file, request, post
+from bottle import run, get, static_file, request, post, response
 import json
-# from backend.polygon_v3 import report_insert_DB
+from backend.polygon_v3 import report_insert_DB
 
 
 @get("/js/<filepath:re:.*\.js>")
@@ -30,10 +30,15 @@ def get_polygons():
         return json.dumps({"polygons": polygons})
 
 
-# @post('/report')
-# def report():
-#     print(request.json)
-#     report_insert_DB()
+@post('/report')
+def report():
+    lat = request.POST.get('lat')
+    long = request.POST.get('long')
+    timestamp = request.POST.get('timestamp')
+    is_found = request.POST.get('is_found')
+    report_insert_DB(lat, long, timestamp, is_found)
+    return json.dumps({"msg": "success"})
+
 
 def main():
     run(host='localhost', port=7000)
