@@ -133,19 +133,20 @@ function submitFunction(event) {
     getLongLatAndGoToAddress(address);
 }
 
-function createPolygon(coordArrayOfArrays, probability) {
-    var color;
-    if (probability > 0.8) {
-        color = "green";
-    } else if (probability >= .4) {
-        color = "goldenrod";
-    } else if (probability < .4) {
-        color = "red";
-    } else {
-        color = "blue";
-    }
-    var poly = L.polygon(coordArrayOfArrays, {color: color});
+function createPolygon(polygonInfo, probability=null) {
+//    var color;
+//    if (probability > 0.8) {
+//        color = "green";
+//    } else if (probability >= .4) {
+//        color = "goldenrod";
+//    } else if (probability < .4) {
+//        color = "red";
+//    } else {
+//        color = "blue";
+//    }
+    var poly = L.polygon(polygonInfo.coords, {color: "blue"});
     poly.addTo(map);
+    $("path")[polygonInfo.index - 1].setAttribute('data-id',polygonInfo.Name);
 }
 
 function parseTimestamp(timestamp) {
@@ -198,12 +199,27 @@ function getTableData(lat, lng) {
 }
 
 function addTable(tableData) {
-    var table = $('<table/>');
+    $("#table").remove();
+    var table = $('<table/>').attr('id','table');
     $('body').append(table);
     table.addClass('table');
-    column.addClass('column');
-    var column = $('<tr/>');
-    table.append(column);
+    var header = $('<tr/>');
+    var name = $('<th/>').text("Area");
+    var prob = $("<th/>").text("Probability");
+    var dist = $("<th/>").text("Distance");
+    var rank = $("<th/>").text("Rank")
+    header.append(name).append(prob).append(dist).append(rank);
+    table.append(header);
+    for (var i = 0; i < tableData.data.length; i++) {
+        var row = $("<tr/>");
+        var name = $("<td/>").text(tableData.data[i][0]);
+        var prob = $("<td/>").text(tableData.data[i][2].toString().slice(0,4));
+        var dist = $("<td/>").text(tableData.data[i][1]);
+        var rank = $("<td/>").text(i + 1);
+        row.append(name).append(prob).append(dist).append(rank);
+        table.append(row);
+    }
+
 }
 
 function renderPolygons() {
@@ -212,8 +228,9 @@ function renderPolygons() {
         url: '/get_areas',
         dataType: 'json',
         success: function (resp) {
+            window.polygons = resp.polygons;
             for (var i = 0; i < resp.polygons.length; i++) {
-                createPolygon(resp.polygons[i].coords, resp.polygons[i].probability);
+                createPolygon(resp.polygons[i]);
             }
         }
     })

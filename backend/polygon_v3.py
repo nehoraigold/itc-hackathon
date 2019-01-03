@@ -253,7 +253,7 @@ def find_parking_spot(lat_u, long_u, timestamp):
 
     # Calls the probability
     probas = calculate_probs(timestamp)
-    probas_display = [(str(round(proba*100)) + "%") for proba in calculate_probs(timestamp)]
+    probas_display = calculate_probs(timestamp)
 
     # Gets the names of the places
     places_name = json_names(json_data)
