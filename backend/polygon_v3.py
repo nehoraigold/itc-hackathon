@@ -1,14 +1,15 @@
-from shapely.geometry import Polygon, Point, LinearRing
+from shapely.geometry import Polygon, Point
 from shapely.geometry import box
 import pyproj as proj
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 from scipy import spatial
-import random
-import ast
 import json
 import os
+import pandas as pd
+from probability import prob_calc
+
 
 import sqlite3
 DB_FILENAME = 'available_log.db'
@@ -18,7 +19,6 @@ LONGITUDE = 1
 SCALING_FACTOR = 82247
 
 cwd = os.getcwd()
-
 
 def point_in_polygons(user_point, polygons_list):
     """
@@ -34,6 +34,7 @@ def point_in_polygons(user_point, polygons_list):
     except IndexError:
         print("not in the polygon")
 
+
 def cast_json_into_list():
     try:
         with open("polygons_coordinates/polygons.json", "r") as file:
@@ -45,6 +46,10 @@ def cast_json_into_list():
 
 def json_coordinates(json_data):
     return np.array([city["coords"] for city in json_data])
+
+
+def json_names(json_data):
+    return np.array([city["Name"] for city in json_data])
 
 
 def coord_in_lat_long(list_lat_long):
@@ -199,6 +204,52 @@ def report_insert_DB(lat_u, long_u, timestamp, is_found):
     if poly_id :
         insert_rows_to_available_log(poly_id, timestamp, is_found, n=100)
 
+def find_parking_spot(lat_u, long_u, timestamp):
+    """
+    Returns a json of a dataframe for giving different probabilities of finding a place and the distance
+    :param lat_u:
+    :param long_u:
+    :param timestamp:
+    :return:
+    """
+
+    coord_u = project_long_lag_coord_into_cartesian([[lat_u, long_u]])
+    xu, yu = coord_u[0][0], coord_u[0][1]
+    user_point = Point(xu, yu)
+
+    # Create my list of polygons from json
+    json_data = cast_json_into_list()
+    polygons_lat_long_coord = json_coordinates(json_data)
+
+    # project lat-long to a plan
+    polygons_cartesians_coord = [project_long_lag_coord_into_cartesian(_) for _ in polygons_lat_long_coord]
+
+    # creates a list of polygons
+    polygons_list = np.array([Polygon(_) for _ in polygons_cartesians_coord])
+
+    # list of distances
+    distances_list = np.array([distance_user_point_to_polygons(user_point, polygons_list)])
+    distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list])
+
+    # Calls the probability
+    probas = prob_calc(timestamp)
+
+    # Gets the names of the places
+    places_name = json_names(json_data)
+
+    # Combined metric
+    metrics = np.array([probas[i]*distances_list_scaled[i] for i in range(len(places_name))])
+
+    print(places_name)
+    print(distances_list_scaled.ravel())
+
+    # Creates the dataframe
+    df = pd.DataFrame.from_dict(data={'place': places_name, 'distance': distances_list_scaled.ravel(), 'chance': probas, 'metric': metrics})
+
+    json_table = df.to_json
+
+    return json_table
+
 
 def main():
     #plot_polygon(jerusalem_polygon)
@@ -260,4 +311,6 @@ def main():
 if __name__ == '__main__':
     main()
 
-report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, True)
+#report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, False)
+
+#print(find_parking_spot(32.052909,34.772081, 12.5))
