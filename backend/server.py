@@ -1,5 +1,6 @@
-from bottle import run, get, static_file, request
+from bottle import run, get, static_file, request, post
 import json
+# from backend.polygon_v3 import report_insert_DB
 
 
 @get("/js/<filepath:re:.*\.js>")
@@ -26,9 +27,13 @@ def html():
 def get_polygons():
     with open('./polygons_coordinates/polygons.json') as polygons_file:
         polygons = json.loads(polygons_file.read())
-        print(polygons)
         return json.dumps({"polygons": polygons})
 
+
+# @post('/report')
+# def report():
+#     print(request.json)
+#     report_insert_DB()
 
 def main():
     run(host='localhost', port=7000)
