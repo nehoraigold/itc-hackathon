@@ -25,14 +25,14 @@ function signUp() {
     }
 
     if (infosLogIn.userName.length < 1 || infosLogIn.password.length < 1) {
-       
-        console.log('berk');
+ 
         return
 
     }
     else {
-        userName.push(infosLogIn)
-        console.log(userName);
+        userName.push(infosLogIn);
+        return;
+   
     }
 
 
@@ -177,6 +177,7 @@ function goToAddress(lat, lng, street) {
     clearOpacityDiv();
     deleteMapMarkers();
     getTableData(lat, lng)
+    addTable();
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
     map.flyTo(latLng);
@@ -258,9 +259,11 @@ function addTable(tableData) {
     var table = $('<table/>');
     $('body').append(table);
     table.addClass('table');
-    column.addClass('column');
-    var column = $('<tr/>');
-    table.append(column);
+    
+    var column1 = $('<tr/>');
+    column1.addClass('column');
+    column1.text(tableData);
+    table.append(column1);
 }
 
 function renderPolygons() {
