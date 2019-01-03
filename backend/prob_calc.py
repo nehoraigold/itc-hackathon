@@ -19,3 +19,6 @@ def calculat_probs(user_time, delta=10/60):
             res = [p[0] for p in cur.fetchall()]
             cur.close()
     return res
+
+
+print(calculat_probs(16.16, delta=10/60))

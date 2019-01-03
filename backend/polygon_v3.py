@@ -1,3 +1,6 @@
+
+
+
 from shapely.geometry import Polygon, Point
 from shapely.geometry import box
 import pyproj as proj
@@ -211,6 +214,7 @@ def report_insert_DB(lat_u, long_u, timestamp, is_found):
 
 def calculate_probs(user_time, delta=10/60):
     delta = (10/60)
+    user_time = float(user_time[:2]) + float(user_time[3:])/60
     with sqlite3.connect(DB_FILENAME) as con:
             cur = con.cursor()
             stmt = """  SELECT AVG(found)
@@ -221,6 +225,11 @@ def calculate_probs(user_time, delta=10/60):
             cur.execute(stmt, (user_time,delta,user_time,delta))
             res = [p[0] for p in cur.fetchall()]
             cur.close()
+    print('________________________________')
+    print(user_time)
+    print(type(user_time))
+    print(res)
+    print('________________________________')
     return res
 
 
@@ -254,6 +263,7 @@ def find_parking_spot(lat_u, long_u, timestamp):
     # Calls the probability
     probas = calculate_probs(timestamp)
     probas_display = calculate_probs(timestamp)
+    print(probas)
 
     # Gets the names of the places
     places_name = json_names(json_data)
@@ -274,7 +284,7 @@ def find_parking_spot(lat_u, long_u, timestamp):
     df = df.sort_values('score', ascending=False)
 
     json_table = df.to_json(orient="split")
-
+    print(json_table)
     return json_table
 
 
@@ -339,3 +349,5 @@ if __name__ == '__main__':
 #report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, False)
 
 #print(find_parking_spot(32.052909,34.772081,9))
+
+
