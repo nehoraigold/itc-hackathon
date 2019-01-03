@@ -333,4 +333,4 @@ if __name__ == '__main__':
 
 #report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, False)
 
-print(find_parking_spot(32.052909,34.772081,9))
+#print(find_parking_spot(32.052909,34.772081,9))
