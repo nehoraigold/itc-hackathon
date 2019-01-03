@@ -45,9 +45,7 @@ def get_parking_spot():
     lat = request.POST.get('lat')
     long = request.POST.get('long')
     time = request.POST.get('time')
-    print(lat, long, time)
-    print(find_parking_spot(lat, long, time))
-    return find_parking_spot(lat, long, time)
+    return json.dumps(find_parking_spot(lat, long, time))
 
 def main():
     run(host='localhost', port=7000)

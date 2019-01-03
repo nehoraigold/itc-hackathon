@@ -192,7 +192,7 @@ function getTableData(lat, lng) {
         },
         success: function(response) {
             console.log(response);
-            addTable(response);
+            addTable(JSON.parse(response));
         }
     })
 }
