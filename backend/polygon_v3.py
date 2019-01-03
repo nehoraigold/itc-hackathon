@@ -268,7 +268,7 @@ def find_parking_spot(lat_u, long_u, timestamp):
     df = pd.DataFrame.from_dict(data={'place': places_name, 'distance': distances_list_scaled.ravel(), 'chance': probas_display, 'score': metrics})
     df = df.sort_values('score', ascending=False)
 
-    json_table = df.to_json
+    json_table = df.to_json(orient="split")
 
     return json_table
 
