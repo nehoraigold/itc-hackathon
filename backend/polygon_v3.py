@@ -1,16 +1,16 @@
-from shapely.geometry import Polygon, Point, LinearRing
+from shapely.geometry import Polygon, Point
 from shapely.geometry import box
 import pyproj as proj
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 from scipy import spatial
-import random
-import ast
 import json
 import os
-
+import pandas as pd
 import sqlite3
+
+
 DB_FILENAME = 'available_log.db'
 
 LATITUDE = 0
@@ -18,7 +18,6 @@ LONGITUDE = 1
 SCALING_FACTOR = 82247
 
 cwd = os.getcwd()
-
 
 def point_in_polygons(user_point, polygons_list):
     """
@@ -34,6 +33,7 @@ def point_in_polygons(user_point, polygons_list):
     except IndexError:
         print("not in the polygon")
 
+
 def cast_json_into_list():
     try:
         with open("polygons_coordinates/polygons.json", "r") as file:
@@ -45,6 +45,10 @@ def cast_json_into_list():
 
 def json_coordinates(json_data):
     return np.array([city["coords"] for city in json_data])
+
+
+def json_names(json_data):
+    return np.array([city["Name"] for city in json_data])
 
 
 def coord_in_lat_long(list_lat_long):
@@ -117,7 +121,7 @@ def plot_polygon(polygon, size_points_distrib=50):
     # Limits
     rdm_points = gen_rdm_points_square(polygon, size_points_distrib)
     # creates mask
-    is_in_distrib = points_in_polygons(polygon, rdm_points)
+    is_in_distrib = point_in_polygons(polygon, rdm_points)
     print(rdm_points[is_in_distrib])
 
     # Points in
@@ -156,6 +160,11 @@ def insert_rows_to_available_log(poly_id, time, found, n):
     found: boolean
     n: number of duplicate rows we want to add
     """
+    if found == 'false':
+        found = False
+    else:
+        found = True
+    n = int(n)
     with sqlite3.connect(DB_FILENAME) as con:
         cur = con.cursor()
         data = (list(zip(n*[poly_id], n*[time], n*[1.0*found])))
@@ -198,6 +207,75 @@ def report_insert_DB(lat_u, long_u, timestamp, is_found):
     # Insert into the DB the ID of the polygon
     if poly_id :
         insert_rows_to_available_log(poly_id, timestamp, is_found, n=100)
+
+
+def calculate_probs(user_time, delta=10/60):
+    delta = (10/60)
+    with sqlite3.connect(DB_FILENAME) as con:
+            cur = con.cursor()
+            stmt = """  SELECT AVG(found)
+                        FROM log_tbl 
+                        WHERE (? - ? < time) AND (time < ? + ?)
+                        GROUP BY area_id
+                        """
+            cur.execute(stmt, (user_time,delta,user_time,delta))
+            res = [p[0] for p in cur.fetchall()]
+            cur.close()
+    return res
+
+
+def find_parking_spot(lat_u, long_u, timestamp):
+    """
+    Returns a json of a dataframe for giving different probabilities of finding a place and the distance
+    :param lat_u:
+    :param long_u:
+    :param timestamp:
+    :return:
+    """
+
+    coord_u = project_long_lag_coord_into_cartesian([[lat_u, long_u]])
+    xu, yu = coord_u[0][0], coord_u[0][1]
+    user_point = Point(xu, yu)
+
+    # Create my list of polygons from json
+    json_data = cast_json_into_list()
+    polygons_lat_long_coord = json_coordinates(json_data)
+
+    # project lat-long to a plan
+    polygons_cartesians_coord = [project_long_lag_coord_into_cartesian(_) for _ in polygons_lat_long_coord]
+
+    # creates a list of polygons
+    polygons_list = np.array([Polygon(_) for _ in polygons_cartesians_coord])
+
+    # list of distances
+    distances_list = np.array([distance_user_point_to_polygons(user_point, polygons_list)])
+    distances_list_scaled = np.array([np.round(SCALING_FACTOR*elt, 0).astype(int) for elt in distances_list]).ravel()
+
+    # Calls the probability
+    probas = calculate_probs(timestamp)
+    probas_display = [(str(round(proba*100)) + "%") for proba in calculate_probs(timestamp)]
+
+    # Gets the names of the places
+    places_name = json_names(json_data)
+
+    # Combined metric
+    #probas_s = (probas - np.array(probas).mean()) / np.array(probas).std()
+    #distances_list_scaled_s = (distances_list_scaled - distances_list_scaled.mean()) / distances_list_scaled.std()
+    #print(probas_s)
+    #print(distances_list_scaled_s)
+    metrics = np.array([round(10**5*probas[i]**4/distances_list_scaled[i],2) for i in range(len(places_name))])
+
+    #print(places_name)
+    #print(distances_list_scaled.ravel())
+    #print(probas)
+
+    # Creates the dataframe
+    df = pd.DataFrame.from_dict(data={'place': places_name, 'distance': distances_list_scaled.ravel(), 'chance': probas_display, 'score': metrics})
+    df = df.sort_values('score', ascending=False)
+
+    json_table = df.to_json(orient="split")
+
+    return json_table
 
 
 def main():
@@ -255,9 +333,9 @@ def main():
     #plot_polygon(polygons_list[3])
 
 
-
-
 if __name__ == '__main__':
     main()
 
-report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, True)
+#report_insert_DB(32.09017378934913, 34.78022575378419, 12.5, False)
+
+#print(find_parking_spot(32.052909,34.772081,9))

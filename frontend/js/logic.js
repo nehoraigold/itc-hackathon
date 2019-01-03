@@ -128,18 +128,14 @@ function reportSpot() {
         timestamp: timestamp,
         is_found: isFound
     };
-    console.log(new_data);
     $.ajax({
         type: "POST",
         url: "/report",
         dataType: "json",
         contentType: "application/json",
         data: new_data,
-        success: function () {
+        success: function(resp) {
             $(button[0].parentNode).html("<div class='reported-text'>Thank You!</div>");
-        },
-        error: function () {
-            $(button[0].parentNode).html("<div>Uh oh! Please try again...</div>");
         }
     })
 }
@@ -180,7 +176,7 @@ function getLongLatAndGoToAddress(address) {
 function goToAddress(lat, lng, street) {
     clearOpacityDiv();
     deleteMapMarkers();
-    addTable();
+    getTableData(lat, lng)
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
     map.flyTo(latLng);
@@ -210,9 +206,7 @@ function createPolygon(coordArrayOfArrays, probability) {
 }
 
 function parseTimestamp(timestamp) {
-    var timestamp = timestamp.split("T");
-    var time = timestamp[1];
-    time = time.split(":");
+    time = timestamp.split(":");
     var hour = parseInt(time[0]);
     var minute = parseInt(time[1]);
     var parsedTime = parseFloat(hour + (minute / 60));
@@ -241,15 +235,32 @@ function clearOpacityDiv() {
     logo.removeClass('bigLogo');
 }
 
-var table = $('<table/>');
-$('body').append(table);
+function getTableData(lat, lng) {
+    var time = $("input[type='time']").val();
+    $.ajax({
+        type: "POST",
+        url: "/get_parking_spot",
+        dataType: 'json',
+        contentType: 'application/json',
+        data: {
+            lat: lat,
+            long: lng,
+            time: time
+        },
+        success: function(response) {
+            console.log(response);
+            addTable(JSON.parse(response));
+        }
+    })
+}
 
-var column = $('<tr/>');
-table.append(column);
-
-function addTable() {
+function addTable(tableData) {
+    var table = $('<table/>');
+    $('body').append(table);
     table.addClass('table');
     column.addClass('column');
+    var column = $('<tr/>');
+    table.append(column);
 }
 
 function renderPolygons() {
