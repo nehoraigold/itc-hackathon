@@ -119,7 +119,7 @@ function getLongLatAndGoToAddress(address) {
 function goToAddress(lat, lng, street) {
     clearOpacityDiv();
     deleteMapMarkers();
-    addTable();
+    getTableData(lat, lng)
     var latLng = [lat, lng];
     L.marker(latLng).addTo(map).bindPopup(street).openPopup();
     map.flyTo(latLng);
@@ -178,15 +178,32 @@ function clearOpacityDiv() {
     logo.removeClass('bigLogo');
 }
 
-var table = $('<table/>');
-$('body').append(table);
+function getTableData(lat, lng) {
+    var time = $("input[type='time']").val();
+    $.ajax({
+        type: "POST",
+        url: "/get_parking_spot",
+        dataType: 'json',
+        contentType: 'application/json',
+        data: {
+            lat: lat,
+            long: lng,
+            time: time
+        },
+        success: function(response) {
+            console.log(response);
+            addTable(response);
+        }
+    })
+}
 
-var column = $('<tr/>');
-table.append(column);
-
-function addTable() {
+function addTable(tableData) {
+    var table = $('<table/>');
+    $('body').append(table);
     table.addClass('table');
     column.addClass('column');
+    var column = $('<tr/>');
+    table.append(column);
 }
 
 function renderPolygons() {

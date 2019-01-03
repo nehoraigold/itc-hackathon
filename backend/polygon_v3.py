@@ -160,6 +160,11 @@ def insert_rows_to_available_log(poly_id, time, found, n):
     found: boolean
     n: number of duplicate rows we want to add
     """
+    if found == 'false':
+        found = False
+    else:
+        found = True
+    n = int(n)
     with sqlite3.connect(DB_FILENAME) as con:
         cur = con.cursor()
         data = (list(zip(n*[poly_id], n*[time], n*[1.0*found])))

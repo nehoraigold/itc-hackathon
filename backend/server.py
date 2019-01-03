@@ -1,6 +1,6 @@
 from bottle import run, get, static_file, request, post, response
 import json
-from backend.polygon_v3 import report_insert_DB
+from backend.polygon_v3 import report_insert_DB, find_parking_spot
 
 
 @get("/js/<filepath:re:.*\.js>")
@@ -39,6 +39,15 @@ def report():
     report_insert_DB(lat, long, timestamp, is_found)
     return json.dumps({"msg": "success"})
 
+
+@post('/get_parking_spot')
+def get_parking_spot():
+    lat = request.POST.get('lat')
+    long = request.POST.get('long')
+    time = request.POST.get('time')
+    print(lat, long, time)
+    print(find_parking_spot(lat, long, time))
+    return find_parking_spot(lat, long, time)
 
 def main():
     run(host='localhost', port=7000)
